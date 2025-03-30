@@ -688,7 +688,7 @@
         const USDT_TO_TSH = 2800;
         const VALID_PLAN_AMOUNTS_USDT = [10, 15, 18, 36, 72];
         const HOLDING_CYCLE_DAYS = 240;
-        const BASE_URL = window.location.origin;
+        const BASE_URL = window.location.href.split('?')[0].replace(/\/$/, '');
 
         function formatTSH(amount) {
             return `${Math.round(amount).toLocaleString()} TSH`;
