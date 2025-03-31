@@ -79,6 +79,9 @@
             padding: 8px 20px;
             border-radius: 20px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .header-balance:hover {
@@ -196,6 +199,7 @@
             position: relative;
             overflow: hidden;
             font-size: 0.9rem;
+            cursor: pointer;
         }
 
         .btn-primary::before {
@@ -237,6 +241,7 @@
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.9rem;
+            cursor: pointer;
         }
 
         .btn-danger:hover {
@@ -339,6 +344,10 @@
             border-radius: 10px;
             margin-bottom: 20px;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
         .dashboard-balance:hover {
@@ -381,6 +390,115 @@
         .history-item .status-pending { color: #f59e0b; font-weight: 600; }
         .history-item .status-approved { color: var(--success); font-weight: 600; }
         .history-item .status-rejected { color: var(--danger); font-weight: 600; }
+
+        .chat-header {
+            background: var(--banner-gradient);
+            color: #fff;
+            padding: 15px;
+            border-radius: 12px 12px 0 0;
+            margin: -25px -25px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chat-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 20%, transparent 80%);
+            opacity: 0.5;
+        }
+
+        .chat-status {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-status .online-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+            border: 1px solid rgba(67, 97, 238, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 8px;
+            max-width: 75%;
+            word-wrap: break-word;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-message.user {
+            background: var(--primary-color);
+            color: #fff;
+            margin-left: auto;
+            text-align: right;
+            border-bottom-right-radius: 0;
+        }
+
+        .chat-message.admin {
+            background: var(--light-color);
+            color: var(--dark-color);
+            margin-right: auto;
+            text-align: left;
+            border-bottom-left-radius: 0;
+            border: 1px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .chat-message small {
+            display: block;
+            font-size: 0.7rem;
+            color: #6b7280;
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .chat-input-area .form-group {
+            flex-grow: 1;
+            margin-bottom: 0;
+        }
+
+        .chat-input-area .btn-primary {
+            width: auto;
+            padding: 12px 20px;
+            text-transform: none;
+        }
 
         .footer-nav {
             position: fixed;
@@ -466,6 +584,16 @@
             animation: spin 1s infinite;
         }
 
+        .balance-loader {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(67, 97, 238, 0.3);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s infinite;
+        }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -511,13 +639,17 @@
             .nav-text {
                 font-size: 0.65rem;
             }
+
+            .chat-message {
+                max-width: 85%;
+            }
         }
     </style>
 </head>
 <body>
     <header id="header">
         <div class="logo">PENATA</div>
-        <div class="header-balance" id="headerBalance">0 TSH</div>
+        <div class="header-balance" id="headerBalance"><span class="balance-loader"></span></div>
     </header>
 
     <div id="register" class="section active">
@@ -561,7 +693,7 @@
             <h2>Welcome to PENATA</h2>
             <p>Grow your wealth with mineral holdings</p>
         </div>
-        <div class="dashboard-balance" id="dashboardBalance">0 TSH</div>
+        <div class="dashboard-balance" id="dashboardBalance"><span class="balance-loader"></span></div>
         <div class="minerals-grid">
             <div class="mineral-card">
                 <img id="ruby-image" class="mineral-image" alt="Ruby">
@@ -641,7 +773,7 @@
 
     <div id="my-account" class="section">
         <h1>My Account</h1>
-        <div class="dashboard-balance" id="accountBalance">0 TSH</div>
+        <div class="dashboard-balance" id="accountBalance"><span class="balance-loader"></span></div>
         <div class="history" id="planDetails"></div>
         <div class="history" id="referralSection">
             <h3>Refer & Earn</h3>
@@ -656,8 +788,25 @@
                 <div id="referredUsers"></div>
             </div>
         </div>
-        <button class="refresh-btn" onclick="refreshAccount()">Refresh</button>
+        <button class="refresh-btn" onclick="refreshAccount(true)">Refresh</button>
         <button class="btn-danger" onclick="logout()">Logout</button>
+    </div>
+
+    <div id="chat" class="section">
+        <div class="chat-header">
+            <span>Alex - Customer Care</span>
+            <span class="chat-status"><span class="online-dot"></span> Online</span>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <p style="color: #6b7280; font-style: italic;">Start typing below to ask a question!</p>
+        </div>
+        <div class="chat-input-area">
+            <div class="form-group">
+                <textarea id="chatInput" class="form-control" placeholder=" " rows="3" style="resize: none;"></textarea>
+                <label for="chatInput">Type your message...</label>
+            </div>
+            <button id="chatSend" class="btn-primary"><i class="bi bi-send-fill"></i> Send</button>
+        </div>
     </div>
 
     <div class="footer-nav" id="footerNav" style="display: none;">
@@ -677,18 +826,28 @@
             <i class="bi bi-arrow-right-circle-fill nav-icon"></i><span class="nav-text">Withdraw</span>
             <span class="nav-tooltip">Cash Out</span>
         </div>
+        <div class="nav-item" onclick="showSection('chat')" data-section="chat">
+            <i class="bi bi-chat-dots-fill nav-icon"></i><span class="nav-text">Chat</span>
+            <span class="nav-tooltip">Support</span>
+        </div>
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBYyySCrAF2F_EKnupwqbpfNnxdzWT39T2wVsVawJMhwGkVHTLdGMa9AfJ8vWID9Md/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyrPdyydO59oW5FLzEN9rrWRJ6kcQEqaWHKxDChx0HrjoEscSeaT2fo_-nRnM9QWLFY/exec";
         const UNSPLASH_ACCESS_KEY = "hYCM33ABpXDiyzJcSL40J53uhPbLGwnhCwVZln91VmQ";
         let email = null;
         let investments = [];
         let pollingInterval = null;
+        let currentBalance = { usdt: 0, tsh: 0 };
+        let lastRefreshTimestamp = 0;
+        let lastIncomeUpdate = null;
         const USDT_TO_TSH = 2800;
         const VALID_PLAN_AMOUNTS_USDT = [10, 15, 18, 36, 72];
         const HOLDING_CYCLE_DAYS = 240;
-        const BASE_URL = window.location.href.split('?')[0].replace(/\/$/, '');
+        const BASE_URL = window.location.origin;
+        const SESSION_DURATION = 7 * 60 * 60 * 1000;
+        const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+        const INCOME_UPDATE_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
 
         function formatTSH(amount) {
             return `${Math.round(amount).toLocaleString()} TSH`;
@@ -696,6 +855,29 @@
 
         function formatUSDT(amount) {
             return `${parseFloat(amount).toFixed(2)} USDT`;
+        }
+
+        function showBalanceLoader() {
+            const elements = ['headerBalance', 'dashboardBalance', 'accountBalance'];
+            elements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = '<span class="balance-loader"></span>';
+            });
+        }
+
+        function updateBalanceDisplays(balance) {
+            if (!balance || (balance.usdt === 0 && balance.tsh === 0 && email)) {
+                showBalanceLoader();
+            } else {
+                const totalTSH = balance.usdt * USDT_TO_TSH + balance.tsh;
+                const formattedBalance = formatTSH(totalTSH);
+                const elements = ['headerBalance', 'dashboardBalance', 'accountBalance'];
+                elements.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = formattedBalance;
+                });
+                localStorage.setItem('lastBalance', JSON.stringify(balance));
+            }
         }
 
         async function fetchUnsplashImage(query, elementId) {
@@ -714,15 +896,17 @@
 
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+            const section = document.getElementById(sectionId);
+            if (section) section.classList.add('active');
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.toggle('active', item.getAttribute('data-section') === sectionId);
             });
             const header = document.getElementById('header');
             const footerNav = document.getElementById('footerNav');
-            const isAuthSection = ['dashboard', 'deposit', 'withdraw', 'my-account'].includes(sectionId);
+            const isAuthSection = ['dashboard', 'deposit', 'withdraw', 'my-account', 'chat'].includes(sectionId);
             header.style.display = isAuthSection ? 'flex' : 'none';
             footerNav.style.display = isAuthSection ? 'flex' : 'none';
+
             if (!email && isAuthSection) {
                 Swal.fire({
                     title: 'Please Sign In',
@@ -732,18 +916,27 @@
                 }).then(() => showSection('login'));
                 return;
             }
-            if (sectionId === 'my-account' || sectionId === 'dashboard') refreshAccount();
+
+            if (isAuthSection) {
+                const cachedBalance = JSON.parse(localStorage.getItem('lastBalance')) || { usdt: 0, tsh: 0 };
+                updateBalanceDisplays(cachedBalance);
+                refreshAccount(false).catch(console.error);
+                startPolling();
+            } else {
+                stopPolling();
+                updateBalanceDisplays({ usdt: 0, tsh: 0 });
+            }
+
             if (sectionId === 'deposit') fetchDepositHistory();
             if (sectionId === 'withdraw') fetchWithdrawHistory();
-            if (isAuthSection) startPolling();
-            else stopPolling();
+            if (sectionId === 'chat') fetchChatMessages();
         }
 
         function startPolling() {
-            if (pollingInterval) return;
+            if (pollingInterval) clearInterval(pollingInterval);
             pollingInterval = setInterval(() => {
-                if (email) refreshAccount();
-            }, 5000);
+                if (email) refreshAccount(false).catch(console.error);
+            }, 30000); // 30 seconds
         }
 
         function stopPolling() {
@@ -765,13 +958,54 @@
                 if (result.isConfirmed) {
                     email = null;
                     investments = [];
+                    currentBalance = { usdt: 0, tsh: 0 };
+                    lastRefreshTimestamp = 0;
+                    lastIncomeUpdate = null;
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('loginTimestamp');
+                    localStorage.removeItem('lastBalance');
+                    localStorage.removeItem('lastIncomeUpdate');
                     stopPolling();
                     document.getElementById('footerNav').style.display = 'none';
                     document.getElementById('header').style.display = 'none';
+                    updateBalanceDisplays({ usdt: 0, tsh: 0 });
                     showSection('login');
                     Swal.fire('Signed Out', 'You have been logged out.', 'success');
                 }
             });
+        }
+
+        function saveSession() {
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('loginTimestamp', Date.now());
+            localStorage.setItem('lastIncomeUpdate', lastIncomeUpdate || Date.now());
+        }
+
+        function checkSession() {
+            const storedEmail = localStorage.getItem('userEmail');
+            const loginTimestamp = localStorage.getItem('loginTimestamp');
+            const cachedBalance = JSON.parse(localStorage.getItem('lastBalance'));
+            const storedIncomeUpdate = localStorage.getItem('lastIncomeUpdate');
+            if (storedEmail && loginTimestamp) {
+                const timeElapsed = Date.now() - parseInt(loginTimestamp);
+                if (timeElapsed < SESSION_DURATION) {
+                    email = storedEmail;
+                    lastIncomeUpdate = storedIncomeUpdate ? parseInt(storedIncomeUpdate) : null;
+                    if (cachedBalance) {
+                        currentBalance = cachedBalance;
+                        updateBalanceDisplays(cachedBalance);
+                    }
+                    showSection('dashboard');
+                    refreshAccount(false).catch(console.error);
+                    return true;
+                } else {
+                    localStorage.removeItem('userEmail');
+                    localStorage.removeItem('loginTimestamp');
+                    localStorage.removeItem('lastBalance');
+                    localStorage.removeItem('lastIncomeUpdate');
+                }
+            }
+            return false;
         }
 
         document.getElementById('registerForm').addEventListener('submit', function(e) {
@@ -823,9 +1057,13 @@
                 .then(data => {
                     if (data.result === 'success') {
                         email = data.email;
+                        saveSession();
                         showSection('dashboard');
-                        refreshAccount();
-                        Swal.fire('Welcome', 'Signed in successfully!', 'success');
+                        refreshAccount(true).then(() => {
+                            Swal.fire('Welcome', 'Signed in successfully!', 'success');
+                        }).catch(() => {
+                            Swal.fire('Error', 'Failed to load account data.', 'error');
+                        });
                         this.reset();
                     } else {
                         Swal.fire('Error', data.error || 'Invalid email or password.', 'error');
@@ -848,8 +1086,8 @@
             holdLoader.style.display = 'inline-block';
 
             fetchBalance().then(balance => {
-                if (balance.totalTSH < tsh) {
-                    Swal.fire('Insufficient Balance', `Need ${formatTSH(tsh)}, but only ${formatTSH(balance.totalTSH)} available.`, 'error');
+                if (balance.usdt < usdtAmount) {
+                    Swal.fire('Insufficient Balance', `Need ${formatUSDT(usdtAmount)}, but only ${formatUSDT(balance.usdt)} available.`, 'error');
                     button.disabled = false;
                     holdText.textContent = 'Hold';
                     holdLoader.style.display = 'none';
@@ -877,8 +1115,9 @@
                             .then(response => response.json())
                             .then(data => {
                                 if (data.result === 'success') {
+                                    currentBalance.usdt -= usdtAmount;
                                     Swal.fire('Success', `Held ${formatTSH(tsh)} in ${plan}!`, 'success');
-                                    refreshAccount();
+                                    refreshAccount(true);
                                 } else {
                                     Swal.fire('Error', data.error || 'Holding failed.', 'error');
                                 }
@@ -895,6 +1134,11 @@
                         holdLoader.style.display = 'none';
                     }
                 });
+            }).catch(error => {
+                Swal.fire('Error', 'Failed to check balance.', 'error');
+                button.disabled = false;
+                holdText.textContent = 'Hold';
+                holdLoader.style.display = 'none';
             });
         }
 
@@ -955,7 +1199,7 @@
                         }).then(() => {
                             this.reset();
                             fetchDepositHistory();
-                            refreshAccount();
+                            refreshAccount(true);
                         });
                     } else {
                         Swal.fire('Error', data.error || 'Deposit failed.', 'error');
@@ -973,7 +1217,6 @@
             e.preventDefault();
             if (!email) return showSection('login');
             const amountUSDT = parseFloat(document.getElementById('withdrawAmount').value);
-            const amountTSH = amountUSDT * USDT_TO_TSH;
             if (amountUSDT < 6) {
                 Swal.fire('Error', 'Minimum withdrawal is 6 USDT.', 'error');
                 return;
@@ -986,8 +1229,8 @@
             withdrawLoader.style.display = 'inline-block';
 
             fetchBalance().then(balance => {
-                if (balance.totalTSH < amountTSH) {
-                    Swal.fire('Error', `Insufficient balance. Available: ${formatTSH(balance.totalTSH)}`, 'error');
+                if (balance.usdt < amountUSDT) {
+                    Swal.fire('Error', `Insufficient balance. Available: ${formatUSDT(balance.usdt)}`, 'error');
                     withdrawBtn.disabled = false;
                     withdrawText.textContent = 'Request';
                     withdrawLoader.style.display = 'none';
@@ -1009,7 +1252,8 @@
                         if (data.result === 'success') {
                             Swal.fire('Withdrawal Requested', 'Awaiting approval.', 'success');
                             this.reset();
-                            refreshAccount();
+                            fetchWithdrawHistory();
+                            refreshAccount(true);
                         } else {
                             Swal.fire('Error', data.error || 'Withdrawal failed.', 'error');
                         }
@@ -1020,6 +1264,11 @@
                         withdrawText.textContent = 'Request';
                         withdrawLoader.style.display = 'none';
                     });
+            }).catch(error => {
+                Swal.fire('Error', 'Failed to check balance.', 'error');
+                withdrawBtn.disabled = false;
+                withdrawText.textContent = 'Request';
+                withdrawLoader.style.display = 'none';
             });
         });
 
@@ -1032,47 +1281,115 @@
             });
         }
 
-        function refreshAccount() {
-            if (!email) return Promise.resolve({ totalTSH: 0 });
-            return Promise.all([fetchBalance(), fetchInvestments(), fetchReferralStats()])
-                .then(([balance, invs, referralStats]) => {
-                    investments = invs;
-                    const totalTSH = balance.balanceUSDT * USDT_TO_TSH + balance.balanceTSH;
-                    const balanceStr = formatTSH(totalTSH);
-                    document.getElementById('accountBalance').textContent = balanceStr;
-                    document.getElementById('dashboardBalance').textContent = balanceStr;
-                    document.getElementById('headerBalance').textContent = balanceStr;
-                    updatePlanDetails(totalTSH);
-                    updateReferralSection(referralStats);
-                    return { totalTSH };
+        async function updateDailyIncome() {
+            if (!email || investments.length === 0) return;
+            const now = Date.now();
+            if (!lastIncomeUpdate || (now - lastIncomeUpdate >= INCOME_UPDATE_INTERVAL)) {
+                let totalDailyIncome = 0;
+                investments.forEach(inv => {
+                    const daysActive = Math.floor((now - new Date(inv.startDate)) / (1000 * 60 * 60 * 24));
+                    if (daysActive <= inv.cycleDays) {
+                        totalDailyIncome += inv.dailyReturn;
+                    }
                 });
+
+                if (totalDailyIncome > 0) {
+                    const formData = new FormData();
+                    formData.append('action', 'updateBalance');
+                    formData.append('email', email);
+                    formData.append('tsh', totalDailyIncome);
+
+                    try {
+                        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                        const data = await response.json();
+                        if (data.result === 'success') {
+                            currentBalance.tsh += totalDailyIncome;
+                            lastIncomeUpdate = now;
+                            localStorage.setItem('lastIncomeUpdate', lastIncomeUpdate);
+                            updateBalanceDisplays(currentBalance);
+                            console.log(`Added ${formatTSH(totalDailyIncome)} to balance`);
+                        }
+                    } catch (error) {
+                        console.error('Error updating daily income:', error);
+                    }
+                }
+            }
         }
 
-        function fetchBalance() {
-            if (!email) return Promise.resolve({ balanceUSDT: 0, balanceTSH: 0 });
+        async function refreshAccount(forceRefresh = false) {
+            if (!email) {
+                currentBalance = { usdt: 0, tsh: 0 };
+                updateBalanceDisplays(currentBalance);
+                return Promise.resolve();
+            }
+
+            const now = Date.now();
+            const shouldFetch = forceRefresh || (now - lastRefreshTimestamp > REFRESH_INTERVAL);
+
+            if (forceRefresh) showBalanceLoader();
+
+            try {
+                if (shouldFetch) {
+                    const [balance, invs, referralStats] = await Promise.all([
+                        fetchBalance(),
+                        fetchInvestments(),
+                        fetchReferralStats()
+                    ]);
+                    investments = invs;
+                    currentBalance = { usdt: balance.usdt, tsh: balance.tsh };
+                    lastRefreshTimestamp = now;
+                    await updateDailyIncome();
+                    updateBalanceDisplays(currentBalance);
+                    updatePlanDetails();
+                    updateReferralSection(referralStats);
+                } else {
+                    updateBalanceDisplays(currentBalance);
+                    await updateDailyIncome();
+                    Promise.all([
+                        fetchInvestments(),
+                        fetchReferralStats()
+                    ]).then(([invs, referralStats]) => {
+                        investments = invs;
+                        updatePlanDetails();
+                        updateReferralSection(referralStats);
+                    }).catch(console.error);
+                }
+            } catch (error) {
+                console.error('Error refreshing account:', error);
+                updateBalanceDisplays(currentBalance);
+                if (forceRefresh) Swal.fire('Error', 'Failed to load account data.', 'error');
+            }
+        }
+
+        async function fetchBalance() {
+            if (!email) return { usdt: 0, tsh: 0 };
             const formData = new FormData();
             formData.append('action', 'getBalance');
             formData.append('email', email);
-            return fetch(SCRIPT_URL, { method: 'POST', body: formData })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result === 'success') {
-                        return { balanceUSDT: data.balanceUSDT, balanceTSH: data.balanceTSH };
-                    }
-                    return { balanceUSDT: 0, balanceTSH: 0 };
-                })
-                .catch(error => {
-                    console.error('Error fetching balance:', error);
-                    return { balanceUSDT: 0, balanceTSH: 0 };
-                });
+            try {
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.result === 'success') {
+                    return {
+                        usdt: parseFloat(data.balanceUSDT) || 0,
+                        tsh: parseFloat(data.balanceTSH) || 0
+                    };
+                }
+                return currentBalance;
+            } catch (error) {
+                console.error('Error fetching balance:', error);
+                return currentBalance;
+            }
         }
 
-        function updatePlanDetails(balance) {
+        function updatePlanDetails() {
             const planDetails = document.getElementById('planDetails');
             let html = '<h3>Your Holdings</h3>';
             if (investments.length === 0) {
                 html += `<p>No active holdings yet.</p>`;
-                if (balance > 0) html += `<p>Available Balance: ${formatTSH(balance)}</p>`;
+                if (currentBalance.usdt > 0 || currentBalance.tsh > 0) {
+                    html += `<p>Available: ${formatTSH(currentBalance.usdt * USDT_TO_TSH + currentBalance.tsh)}</p>`;
+                }
             } else {
                 investments.forEach(inv => {
                     const daysActive = Math.floor((new Date() - new Date(inv.startDate)) / (1000 * 60 * 60 * 24));
@@ -1090,7 +1407,7 @@
                         </div>
                     `;
                 });
-                if (balance > 0) html += `<p>Available Balance: ${formatTSH(balance)}</p>`;
+                html += `<p>Available: ${formatTSH(currentBalance.usdt * USDT_TO_TSH + currentBalance.tsh)}</p>`;
             }
             planDetails.innerHTML = html;
         }
@@ -1215,10 +1532,88 @@
                 .catch(() => Swal.fire('Error', 'Failed to copy link.', 'error'));
         }
 
+        function fetchChatMessages() {
+            if (!email) return;
+            const formData = new FormData();
+            formData.append('action', 'getChat');
+            formData.append('email', email);
+            fetch(SCRIPT_URL, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        displayChatMessages(data.messages);
+                    }
+                })
+                .catch(error => console.error('Error fetching chat messages:', error));
+        }
+
+        function displayChatMessages(messages) {
+            const chatMessagesDiv = document.getElementById('chatMessages');
+            if (messages.length === 0) {
+                chatMessagesDiv.innerHTML = '<p style="color: #6b7280; font-style: italic;">No messages yet. Start typing below!</p>';
+                return;
+            }
+            let html = '';
+            messages.forEach(msg => {
+                const senderClass = msg.sender === 'user' ? 'user' : 'admin';
+                html += `
+                    <div class="chat-message ${senderClass}">
+                        ${msg.message}
+                        <small>${new Date(msg.timestamp).toLocaleString()}</small>
+                        ${msg.response ? `<br><strong>Response:</strong> ${msg.response}` : '<br><em>Awaiting response...</em>'}
+                    </div>
+                `;
+            });
+            chatMessagesDiv.innerHTML = html;
+            chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+        }
+
+        document.getElementById('chatSend').addEventListener('click', function() {
+            if (!email) return showSection('login');
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            if (!message) {
+                Swal.fire('Error', 'Please enter a message.', 'error');
+                return;
+            }
+
+            const sendBtn = this;
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<span class="loader" style="display: inline-block;"></span> Sending...';
+
+            const formData = new FormData();
+            formData.append('action', 'sendChat');
+            formData.append('email', email);
+            formData.append('message', message);
+
+            fetch(SCRIPT_URL, { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        chatInput.value = '';
+                        fetchChatMessages();
+                        Swal.fire('Sent!', 'Your message has been sent to support.', 'success');
+                    } else {
+                        Swal.fire('Error', data.error || 'Failed to send message.', 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error', 'Something went wrong.', 'error'))
+                .finally(() => {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<i class="bi bi-send-fill"></i> Send';
+                });
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('header').style.display = 'none';
             document.getElementById('footerNav').style.display = 'none';
-            showSection('register');
+            updateBalanceDisplays({ usdt: 0, tsh: 0 });
+
+            if (checkSession()) {
+                // Session restored
+            } else {
+                showSection('register');
+            }
 
             fetchUnsplashImage('ruby gemstone', 'ruby-image');
             fetchUnsplashImage('diamond gemstone', 'diamond-image');
